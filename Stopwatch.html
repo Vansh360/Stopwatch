@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced Stopwatch</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      text-align: center;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+      color: #ff8c00;
+    }
+
+    .timer {
+      font-size: 4em;
+      font-weight: bold;
+      margin-bottom: 20px;
+      padding: 10px 25px;
+      background-color: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    button {
+      font-size: 1.1em;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #ff8c00;
+      color: white;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #ff5722;
+      transform: scale(1.1);
+    }
+
+    .lap-container {
+      width: 300px;
+      max-height: 200px;
+      overflow-y: auto;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: left;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .lap-container h2 {
+      font-size: 1.2rem;
+      color: #ffdaaa;
+    }
+
+    .lap {
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      padding: 5px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Stopwatch</h1>
+  <div class="timer" id="timerDisplay">00:00:00</div>
+
+  <div class="buttons">
+    <button onclick="startTimer()">Start</button>
+    <button onclick="stopTimer()">Stop</button>
+    <button onclick="resetTimer()">Reset</button>
+    <button onclick="recordLap()">Lap</button>
+  </div>
+
+  <div class="lap-container" id="laps">
+    <h2>Lap Times</h2>
+  </div>
+
+  <script>
+    let timer;
+    let seconds = 0, minutes = 0, hours = 0;
+    let running = false;
+    let lapCount = 1;
+
+    function updateDisplay() {
+      const display = document.getElementById("timerDisplay");
+      display.innerText =
+        `${String(hours).padStart(2, '0')}:` +
+        `${String(minutes).padStart(2, '0')}:` +
+        `${String(seconds).padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+      if (!running) {
+        running = true;
+        timer = setInterval(() => {
+          seconds++;
+          if (seconds === 60) { seconds = 0; minutes++; }
+          if (minutes === 60) { minutes = 0; hours++; }
+          updateDisplay();
+        }, 1000);
+      }
+    }
+
+    function stopTimer() {
+      clearInterval(timer);
+      running = false;
+    }
+
+    function resetTimer() {
+      stopTimer();
+      seconds = 0;
+      minutes = 0;
+      hours = 0;
+      lapCount = 1;
+      updateDisplay();
+      document.getElementById("laps").innerHTML = "<h2>Lap Times</h2>";
+    }
+
+    function recordLap() {
+      if (!running) return;
+
+      const lapTime =
+        `${String(hours).padStart(2, '0')}:` +
+        `${String(minutes).padStart(2, '0')}:` +
+        `${String(seconds).padStart(2, '0')}`;
+
+      const lapList = document.getElementById("laps");
+      const lapEntry = document.createElement("div");
+      lapEntry.className = "lap";
+      lapEntry.textContent = `Lap ${lapCount++}: ${lapTime}`;
+      lapList.appendChild(lapEntry);
+    }
+  </script>
+
+</body>
+</html>
